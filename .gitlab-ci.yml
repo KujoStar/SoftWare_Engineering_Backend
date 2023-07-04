@@ -1,0 +1,63 @@
+image: registry.secoder.net/tool/deployer
+
+stages:
+  - build
+  - test
+  - deploy
+
+build:
+  stage: build
+  script:
+    - export BUILD_IMAGE_NAME=$CI_REGISTRY_IMAGE
+    - export BUILD_IMAGE_TAG=$CI_COMMIT_REF_SLUG
+    - export BUILD_IMAGE_USERNAME=$CI_REGISTRY_USER
+    - export BUILD_IMAGE_PASSWORD=$CI_REGISTRY_PASSWORD
+    - deployer build
+  only:
+    - master
+
+unit-test:
+  image: python:3.10
+  stage: test
+  before_script:
+    - export UNIT_TEST=1
+    - export TEST_DB_NAME=$TEST_DB_NAME
+    - export TEST_DB_USER=$TEST_DB_USER
+    - export TEST_DB_PASSWORD=$TEST_DB_PASSWORD
+    - export TEST_DB_HOST=$TEST_DB_HOST
+    - export TEST_DB_PORT=$TEST_DB_PORT
+    - export TEST_MAIL_HOST=$TEST_MAIL_HOST
+    - export TEST_MAIL_USER=$TEST_MAIL_USER
+    - export TEST_MAIL_PASSWORD=$TEST_MAIL_PASSWORD
+    - export TEST_MAIL_SENDER=$TEST_MAIL_SENDER
+    - export TEST_COS_DB_NAME=$TEST_COS_DB_NAME
+    - export TEST_COS_SECRET_ID=$TEST_COS_SECRET_ID
+    - export TEST_COS_SECRET_KEY=$TEST_COS_SECRET_KEY
+    - export TEST_COS_REGION=$TEST_COS_REGION
+    - export TEST_COS_APP_ID=$TEST_COS_APP_ID
+    - export TEST_ES_HOST=$TEST_ES_HOST
+    - export TEST_ES_DB_NAME=$TEST_ES_DB_NAME
+    - export TEST_BAIDU_AI_TOKEN=$TEST_BAIDU_AI_TOKEN
+    - export TEST_EDDSA_PRIVATE_KEY=$TEST_EDDSA_PRIVATE_KEY
+    - export TEST_EDDSA_PUBLIC_KEY=$TEST_EDDSA_PUBLIC_KEY
+    - export TEST_JWT=$TEST_JWT
+    - apt-get update
+    - apt install -y libgl1-mesa-glx ffmpeg
+    - pip install -i https://pypi.tuna.tsinghua.edu.cn/simple --upgrade pip
+    - pip install -i https://pypi.tuna.tsinghua.edu.cn/simple -r requirements.txt
+  script:
+    - python3 manage.py migrate
+    - sh test.sh
+  after_script:
+    - unset UNIT_TEST
+    - SUFFIX=$RANDOM
+    - curl "http://api.secoder.net/static/sonar-scanner.tar.gz" -s -o "/tmp/sonar-$SUFFIX.tar.gz"
+    - tar -xf "/tmp/sonar-$SUFFIX.tar.gz"  -C /opt
+    - /opt/sonar-scanner/bin/sonar-scanner
+
+deploy:
+  stage: deploy
+  script:
+    - deployer dyno replace $CI_PROJECT_NAME $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG gitlab-ci-token $REGISTRY_PWD
+  only:
+    - master

@@ -1,0 +1,9 @@
+__pycache__/
+configs/
+db.sqlite3
+.DS_Store
+*/.DS_Store
+.coverage
+coverage-reports/
+xunit-reports/
+.pytest_cache/
