@@ -2,13 +2,12 @@ from django.test import TestCase
 from UsersApp.models import User, FollowRelation
 from ImagesApp.models import AronaImage
 import random as rd
+import os
 from blake3 import blake3
-TEST_JWT = "eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3QiLCJuaWNrbmFtZSI6IiIsImVtYWlsIjoidGVzdEBzaGFya2xhc2Vycy5jb20iLCJzbG9nYW4iOiIxMTQ1MTQiLCJyZWdpc3RlclRpbWUiOjE2ODE0NjYwNjAuMTkyMzUxLCJmb2xsb3dpbmdDb3VudCI6MCwiZm9sbG93ZXJDb3VudCI6MCwidXBsb2FkQ291bnQiOjB9.GuqddV7nwnatjcIPhX-YCUG0J2sQYgYU50kB5z3bEsoJ8ZtJzqy_8kYkNAAAIBNCaBu48boNTIyjWJ5ODTeTBQ"
 # Create your tests here.
 class UsersTests(TestCase):
     def setUp(self):
-        # self.jwt = os.getenv("TEST_JWT")
-        self.jwt = TEST_JWT
+        self.jwt = os.getenv("TEST_JWT")
         
     def setupuser(self, username, password, email):
         if not User.objects.filter(username = username).exists():

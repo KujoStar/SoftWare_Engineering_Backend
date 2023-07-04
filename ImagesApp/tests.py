@@ -16,8 +16,8 @@ class ImagesTests(TestCase):
     def setUp(self) -> None:
         self.path = TMP_DIR
         self.factory = RequestFactory()
-        User.objects.create(username="test", password="2eafb9f0ce17f5d46a35a3f163155ddd9d6230757cf659abffc2a87ed36bb209", 
-                            email="test@sharklasers.com", mail_code="231425", salt="6a38b367-1b4a-4c41-b67c-0015092da16f")
+        User.objects.create(username="test", password="114514", 
+                            email="test@sharklasers.com", mail_code="231425", salt="1919810")
         self.user = User.objects.filter(username="test").first()
         self.jwt = os.getenv("TEST_JWT")
 

@@ -11,12 +11,10 @@ from .views import *
 import json
 import os
 # Create your tests here.
-TEST_JWT = "eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3QiLCJuaWNrbmFtZSI6IiIsInJlZ2lzdGVyVGltZSI6MTY4MTQ2NjA2MC4xOTIzNTEsInVzZXJUeXBlIjoidXNlciIsInNsb2dhbiI6IjExNDUxNCIsImVtYWlsIjoidGVzdEBzaGFya2xhc2Vycy5jb20iLCJmb2xsb3dpbmdDb3VudCI6MSwiZm9sbG93ZXJDb3VudCI6MSwidXBsb2FkQ291bnQiOjB9.RZezzEe9Nb9dRfpRP6xla7IqizFVlI46qaVuBRbIoDcFhdA_1mq3f1XHC1z1T-ua8dcbP8NM9xuKsGu1X0KSBg"
 class SearchTests(TestCase):
     def setUp(self) -> None:
         self.factory = RequestFactory()
-        #self.jwt = os.getenv("TEST_JWT")# for real unit-test
-        self.jwt = TEST_JWT # for localhost test
+        self.jwt = os.getenv("TEST_JWT")# for real unit-test
 
     def setupuser(self, username, password, email):
         if not User.objects.filter(username = username).exists():
